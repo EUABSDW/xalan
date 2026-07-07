@@ -21,6 +21,8 @@ RUN ls -la && ant
 
 WORKDIR /home/carlos/dacapobench/benchmarks
 
+RUN pwd && ls -la && find . -maxdepth 3 -name build.xml
+
 RUN ant xalan
 
 RUN chmod +x /home/carlos/run_energy_xalan.sh
