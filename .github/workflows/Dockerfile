@@ -16,6 +16,7 @@ RUN apt update && apt install -y \
     python3 \
     python-is-python3 \
     nodejs \
+    npm \
     bc \
     make \
     gcc \
@@ -79,7 +80,7 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 RUN java -version
 
 
-RUN echo "Building DaCapo Xalan benchmark "
+RUN echo "Building DaCapo Xalan benchmark"
 RUN ant xalan
 
 
