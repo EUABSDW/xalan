@@ -9,6 +9,11 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Cleanup Docker
+        run: |
+          docker system prune -af --volumes
+          docker builder prune -af
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -21,6 +26,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            --no-cache \
             -f .github/workflows/Dockerfile \
             -t xalan-energy .
 
