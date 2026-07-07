@@ -48,7 +48,3 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 RUN ant xalan
-
-RUN chmod +x /home/carlos/run_energy_xalan.sh
-
-CMD ["/home/carlos/run_energy_xalan.sh"]
