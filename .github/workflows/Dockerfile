@@ -12,24 +12,11 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-WORKDIR /home/carlos
+WORKDIR /home/carlos/xalan
 
 COPY . .
 
-RUN echo "Contenido /home/carlos:"
-RUN ls -la /home/carlos
-
-RUN echo "Contenido xalan:"
-RUN ls -la /home/carlos/xalan
-
-RUN echo "Contenido dacapo:"
-RUN ls -la /home/carlos/dacapobench
-
-
-WORKDIR /home/carlos/xalan
-
 RUN ant
-
 
 WORKDIR /home/carlos/dacapobench/benchmarks
 
