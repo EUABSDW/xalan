@@ -1,4 +1,4 @@
-name: xalan1
+name: xalan
 
 on:
   push:
@@ -9,23 +9,36 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Cleanup previous files and docker
+
+      - name: Full cleanup Docker and previous files
         run: |
+          echo "Cleaning Docker..."
+
+          sudo docker stop $(sudo docker ps -aq) || true
+          sudo docker rm -f $(sudo docker ps -aq) || true
+
+          sudo docker system prune -af --volumes || true
+          sudo docker builder prune -af || true
+
+          echo "Cleaning DaCapo folders..."
+
           sudo chown -R $(whoami):$(whoami) /tmp/dacapobench || true
           sudo chown -R $(whoami):$(whoami) ./dacapobench || true
 
-          rm -rf /tmp/dacapobench || true
-          rm -rf ./dacapobench || true
+          sudo rm -rf /tmp/dacapobench || true
+          sudo rm -rf ./dacapobench || true
 
-          docker system prune -af --volumes || true
-          docker builder prune -af || true
+          echo "Cleanup finished"
+
 
       - name: Checkout
         uses: actions/checkout@v4
 
+
       - name: Prepare DaCapo
         run: |
           cp -r ~/Documentos/dacapobench ./dacapobench
+
 
       - name: Build Docker image
         run: |
@@ -33,8 +46,43 @@ jobs:
             -f .github/workflows/Dockerfile \
             -t xalan-energy .
 
-      - name: Run DaCapo Xalan benchmark
+
+      - name: Wait before benchmark
         run: |
-          docker run --rm --privileged xalan-energy \
-          java -jar /home/carlos/xalan/dacapobench/benchmarks/dacapo-evaluation-git-e947cbfc-dirty/launchers/xalan.jar \
-          -s large xalan
+          echo "Waiting 30 seconds before starting measurements..."
+          sleep 30
+
+
+      - name: Run Xalan benchmark 30 times with measurements
+        run: |
+          for i in $(seq 1 30)
+          do
+            echo "======================================"
+            echo " Starting Xalan iteration $i/30"
+            echo "======================================"
+
+            /home/carlos/runner-config/scripts/setup.sh \
+              "start_measurement" \
+              "baseline=true" \
+              "benchmark" \
+              "software" \
+              "perf" \
+              "interval=10" \
+              "events=power/energy-pkg/,power/energy-cores/"
+
+
+            docker run --rm --privileged xalan-energy \
+            java -jar /home/carlos/xalan/dacapobench/benchmarks/dacapo-evaluation-git-e947cbfc-dirty/launchers/xalan.jar \
+            -s large xalan
+
+
+            /home/carlos/runner-config/scripts/setup.sh \
+              "end_measurement" \
+              "benchmark"
+
+
+            echo "Finished Xalan iteration $i/30"
+
+            sleep 30
+
+          done
