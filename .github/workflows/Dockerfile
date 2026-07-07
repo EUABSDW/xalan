@@ -18,16 +18,10 @@ COPY . .
 
 RUN ant
 
-WORKDIR /home/carlos/dacapobench/benchmarks
-
-RUN pwd
-RUN ls -la
-RUN find . -name build.xml
+WORKDIR /home/carlos/xalan/dacapobench/benchmarks
 
 RUN ant xalan
 
-
 RUN chmod +x /home/carlos/run_energy_xalan.sh
-
 
 CMD ["/home/carlos/run_energy_xalan.sh"]
