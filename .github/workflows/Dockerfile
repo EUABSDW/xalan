@@ -11,29 +11,22 @@ RUN apt update && apt install -y \
     linux-tools-generic \
     && rm -rf /var/lib/apt/lists/*
 
-
 WORKDIR /home/carlos
 
-COPY . .
-
+COPY . /home/carlos/xalan
 
 WORKDIR /home/carlos/xalan
 
-RUN ant
-
+RUN ls -la && ant
 
 WORKDIR /home/carlos/dacapobench/benchmarks
-
 
 RUN sed -i \
     's#/home/carlos/Documentos/xalan#/home/carlos/xalan#g' \
     bms/xalan/build.xml
 
-
 RUN ant xalan
 
-
 RUN chmod +x /home/carlos/run_energy_xalan.sh
-
 
 CMD ["/home/carlos/run_energy_xalan.sh"]
