@@ -14,13 +14,13 @@ jobs:
 
       - name: Cleanup old files
         run: |
-          sudo rm -rf ./dacapobench
-          sudo rm -rf /tmp/dacapobench
+          rm -rf ./dacapobench
+          rm -rf /tmp/dacapobench
 
       - name: Prepare DaCapo
         run: |
           cp -r ~/Documentos/dacapobench /tmp/dacapobench
-          sudo chown -R $USER:$USER /tmp/dacapobench
+          chown -R $USER:$USER /tmp/dacapobench
           cp -r /tmp/dacapobench ./dacapobench
 
       - name: Build Docker image
