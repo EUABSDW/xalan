@@ -1,4 +1,4 @@
-name: xalan
+name: xalan1
 
 on:
   push:
@@ -9,24 +9,27 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Cleanup previous files and docker
+        run: |
+          sudo chown -R $(whoami):$(whoami) /tmp/dacapobench || true
+          sudo chown -R $(whoami):$(whoami) ./dacapobench || true
+
+          rm -rf /tmp/dacapobench || true
+          rm -rf ./dacapobench || true
+
+          docker system prune -af --volumes || true
+          docker builder prune -af || true
+
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cleanup old files
-        run: |
-          rm -rf ./dacapobench
-          rm -rf /tmp/dacapobench
-
       - name: Prepare DaCapo
         run: |
-          cp -r ~/Documentos/dacapobench /tmp/dacapobench
-          chown -R $USER:$USER /tmp/dacapobench
-          cp -r /tmp/dacapobench ./dacapobench
+          cp -r ~/Documentos/dacapobench ./dacapobench
 
       - name: Build Docker image
         run: |
           docker build \
-            --no-cache \
             -f .github/workflows/Dockerfile \
             -t xalan-energy .
 
