@@ -14,7 +14,9 @@ jobs:
 
       - name: Prepare DaCapo
         run: |
-          cp -r ~/Documentos/dacapobench ./dacapobench
+          rm -rf /tmp/dacapobench
+          cp -r ~/Documentos/dacapobench /tmp/dacapobench
+          cp -r /tmp/dacapobench ./dacapobench
 
       - name: Build Docker image
         run: |
