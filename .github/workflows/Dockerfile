@@ -11,21 +11,36 @@ RUN apt update && apt install -y \
     linux-tools-generic \
     && rm -rf /var/lib/apt/lists/*
 
+
 WORKDIR /home/carlos
 
-COPY xalan /home/carlos/xalan
-COPY dacapobench /home/carlos/dacapobench
+COPY . .
+
+RUN echo "Contenido /home/carlos:"
+RUN ls -la /home/carlos
+
+RUN echo "Contenido xalan:"
+RUN ls -la /home/carlos/xalan
+
+RUN echo "Contenido dacapo:"
+RUN ls -la /home/carlos/dacapobench
+
 
 WORKDIR /home/carlos/xalan
 
 RUN ant
 
+
 WORKDIR /home/carlos/dacapobench/benchmarks
 
-RUN pwd && ls -la && find . -maxdepth 3 -name build.xml
+RUN pwd
+RUN ls -la
+RUN find . -name build.xml
 
 RUN ant xalan
 
+
 RUN chmod +x /home/carlos/run_energy_xalan.sh
+
 
 CMD ["/home/carlos/run_energy_xalan.sh"]
