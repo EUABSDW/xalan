@@ -1,4 +1,4 @@
-name: Xalan
+name: Xalan DaCapo Energy
 
 on:
   push:
@@ -9,18 +9,17 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Prepare DaCapo
         run: |
-          docker build \
-            -f .github/workflows/Dockerfile \
-            -t xalan .
+          cp -r ~/Documentos/dacapobench ./dacapobench
+
+      - name: Build Docker
+        run: |
+          docker build -t xalan-energy .
 
       - name: Run benchmark
         run: |
-          docker run \
-            --rm \
-            --privileged \
-            xalan-energy
+          docker run --rm --privileged xalan-energy
