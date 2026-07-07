@@ -13,11 +13,12 @@ RUN apt update && apt install -y \
 
 WORKDIR /home/carlos
 
-COPY . /home/carlos/xalan
+COPY xalan /home/carlos/xalan
+COPY dacapobench /home/carlos/dacapobench
 
 WORKDIR /home/carlos/xalan
 
-RUN ls -la && ant
+RUN ant
 
 WORKDIR /home/carlos/dacapobench/benchmarks
 
