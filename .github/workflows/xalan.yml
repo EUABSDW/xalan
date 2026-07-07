@@ -9,18 +9,24 @@ jobs:
     runs-on: self-hosted
 
     steps:
+
       - name: Cleanup Docker
         run: |
-          docker system prune -af --volumes
-          docker builder prune -af
+          sudo docker system prune -af --volumes
+          sudo docker builder prune -af
 
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cleanup old files
+        run: |
+          sudo rm -rf ./dacapobench
+          sudo rm -rf /tmp/dacapobench
+
       - name: Prepare DaCapo
         run: |
-          rm -rf /tmp/dacapobench
           cp -r ~/Documentos/dacapobench /tmp/dacapobench
+          sudo chown -R $USER:$USER /tmp/dacapobench
           cp -r /tmp/dacapobench ./dacapobench
 
       - name: Build Docker image
