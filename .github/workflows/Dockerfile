@@ -14,6 +14,7 @@ RUN apt update && apt install -y \
     wget \
     curl \
     python3 \
+    python3-pip \
     python-is-python3 \
     nodejs \
     npm \
@@ -29,6 +30,9 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
+RUN pip3 install --break-system-packages requests
+
+
 WORKDIR /home/carlos/xalan
 
 COPY . .
@@ -38,13 +42,14 @@ RUN echo "Checking Xalan directory"
 RUN ls -la /home/carlos/xalan
 
 
-RUN echo "Building Xalan with Java 8"
-
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
+
 RUN java -version
 
+
+RUN echo "Building Xalan"
 RUN ant
 
 
@@ -61,7 +66,7 @@ RUN ls -la
 RUN find . -maxdepth 3 -name build.xml
 
 
-RUN echo "Configuring DaCapo JDK 11 path"
+RUN echo "Configuring DaCapo"
 RUN echo "jdk.11.home=/usr/lib/jvm/java-11-openjdk-amd64" > local.properties
 
 
@@ -71,6 +76,7 @@ RUN cvs --version
 RUN svn --version
 RUN python --version
 RUN node --version
+RUN npm --version
 
 
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
