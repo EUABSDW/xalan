@@ -16,12 +16,14 @@ jobs:
         run: |
           cp -r ~/Documentos/dacapobench ./dacapobench
 
-      - name: Build Docker
+      - name: Build Docker image
         run: |
           docker build \
             -f .github/workflows/Dockerfile \
             -t xalan-energy .
 
-      - name: Run benchmark
+      - name: Run DaCapo Xalan benchmark
         run: |
-          docker run --rm --privileged xalan-energy
+          docker run --rm --privileged xalan-energy \
+          java -jar /home/carlos/xalan/dacapobench/benchmarks/dacapo-evaluation-git-e947cbfc-dirty/launchers/xalan.jar \
+          -s large xalan
