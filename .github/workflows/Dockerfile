@@ -24,4 +24,4 @@ RUN ant xalan
 
 RUN chmod +x /home/carlos/run_energy_xalan.sh
 
-CMD ["/home/carlos/run_energy_xalan.sh"]
+CMD ["/home/carlos/run.sh"]
