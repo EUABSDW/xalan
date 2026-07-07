@@ -1,0 +1,26 @@
+name: Xalan
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -f .github/workflows/Dockerfile \
+            -t xalan .
+
+      - name: Run benchmark
+        run: |
+          docker run \
+            --rm \
+            --privileged \
+            xalan-energy
