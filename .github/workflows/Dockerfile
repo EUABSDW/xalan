@@ -79,7 +79,7 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 RUN java -version
 
 
-RUN echo "Building DaCapo Xalan benchmark"
+RUN echo "Building DaCapo Xalan benchmark "
 RUN ant xalan
 
 
