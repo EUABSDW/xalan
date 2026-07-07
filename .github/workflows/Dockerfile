@@ -21,10 +21,6 @@ RUN ls -la && ant
 
 WORKDIR /home/carlos/dacapobench/benchmarks
 
-RUN sed -i \
-    's#/home/carlos/Documentos/xalan#/home/carlos/xalan#g' \
-    bms/xalan/build.xml
-
 RUN ant xalan
 
 RUN chmod +x /home/carlos/run_energy_xalan.sh
