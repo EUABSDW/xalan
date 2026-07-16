@@ -28,7 +28,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Enumeration;
 
 import javax.xml.transform.Templates;
@@ -118,9 +118,9 @@ public class XSLTProcessorApplet extends Applet
    */
   private String m_treeURL = null;
 
-  /** 
+  /**
    * DocumentBase URL
-   * @serial       
+   * @serial
    */
   private URL m_documentBase = null;
 
@@ -203,24 +203,24 @@ public class XSLTProcessorApplet extends Applet
   {
 
     // PARAMETER SUPPORT
-    //          The following code retrieves the value of each parameter
+    //                 The following code retrieves the value of each parameter
     // specified with the <PARAM> tag and stores it in a member
     // variable.
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     String param;
 
     // styleURL: Parameter description
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     param = getParameter(PARAM_styleURL);
     
     // stylesheet parameters
-    m_parameters = new Hashtable();
+    m_parameters = new ConcurrentHashMap();
 
     if (param != null)
       setStyleURL(param);
 
     // documentURL: Parameter description
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     param = getParameter(PARAM_documentURL);
 
     if (param != null)
@@ -234,7 +234,7 @@ public class XSLTProcessorApplet extends Applet
     // CreateControls() method from within this method. Remove the following
     // call to resize() before adding the call to CreateControls();
     // CreateControls() does its own resizing.
-    //----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     resize(320, 240);
   }
   
@@ -258,7 +258,7 @@ public class XSLTProcessorApplet extends Applet
       // Prime the pump so that subsequent transforms are faster.
       StringReader xmlbuf = new StringReader("<?xml version='1.0'?><foo/>");
       StringReader xslbuf = new StringReader(
-        "<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
+         "<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
       PrintWriter pw = new PrintWriter(new StringWriter());
 
       synchronized (m_tfactory)
@@ -367,11 +367,10 @@ public class XSLTProcessorApplet extends Applet
     m_attrValueToSet = value;
   }
 
-
   /** 
    * Stylesheet parameter key/value pair stored in a hashtable
    */
-  transient Hashtable m_parameters;  
+  transient ConcurrentHashMap m_parameters;  
 
   /**
    * Submit a stylesheet parameter.
@@ -527,6 +526,7 @@ public class XSLTProcessorApplet extends Applet
       {
         Transformer transformer = m_tfactory.newTransformer();
         StreamSource source = new StreamSource(docURL.toString());    
+        
         StreamResult result = new StreamResult(pw);
         transformer.transform(source, result);
         text = osw.toString();
@@ -642,49 +642,49 @@ public class XSLTProcessorApplet extends Applet
   private String processTransformation() throws TransformerException
   {
     String htmlData = null;
-    this.showStatus("Waiting for Transformer and Parser to finish loading and JITing...");
+    this.showStatus("Waiting for Transformer and Parser to finish loading and JIT...");
     
     synchronized (m_tfactory)
     {
-     URL documentURL = null;
-      URL styleURL = null;
-      StringWriter osw = new StringWriter();
-      PrintWriter pw = new PrintWriter(osw, false);
-      StreamResult result = new StreamResult(pw);
+       URL documentURL = null;
+       URL styleURL = null;
+       StringWriter osw = new StringWriter();
+       PrintWriter pw = new PrintWriter(osw, false);
+       StreamResult result = new StreamResult(pw);
     
-      this.showStatus("Begin Transformation...");
-      try
-      {
-        documentURL = new URL(m_codeBase, m_documentURL);
-        StreamSource xmlSource = new StreamSource(documentURL.toString());
+       this.showStatus("Begin Transformation...");
+       try
+       {
+         documentURL = new URL(m_codeBase, m_documentURL);
+         StreamSource xmlSource = new StreamSource(documentURL.toString());
 
-        styleURL = new URL(m_codeBase, m_styleURL);
-        StreamSource xslSource = new StreamSource(styleURL.toString());
+         styleURL = new URL(m_codeBase, m_styleURL);
+         StreamSource xslSource = new StreamSource(styleURL.toString());
 
-        Transformer transformer = m_tfactory.newTransformer(xslSource);
+         Transformer transformer = m_tfactory.newTransformer(xslSource);
 
-        
-        Enumeration m_keys = m_parameters.keys();
-        while (m_keys.hasMoreElements()){
-          Object key = m_keys.nextElement();
-          Object expression = m_parameters.get(key);
-          transformer.setParameter((String) key, expression);
-        }
-        transformer.transform(xmlSource, result);
-      }
-      catch (TransformerConfigurationException tfe)
-      {
-        tfe.printStackTrace();
-        throw new RuntimeException(tfe.getMessage());
-      }
-      catch (MalformedURLException e)
-      {
-        e.printStackTrace();
-        throw new RuntimeException(e.getMessage());
-      }
+         
+         Enumeration m_keys = m_parameters.keys();
+         while (m_keys.hasMoreElements()){
+           Object key = m_keys.nextElement();
+           Object expression = m_parameters.get(key);
+           transformer.setParameter((String) key, expression);
+         }
+         transformer.transform(xmlSource, result);
+       }
+       catch (TransformerConfigurationException tfe)
+       {
+         tfe.printStackTrace();
+         throw new RuntimeException(tfe.getMessage());
+       }
+       catch (MalformedURLException e)
+       {
+         e.printStackTrace();
+         throw new RuntimeException(e.getMessage());
+       }
 	  
-      this.showStatus("Transformation Done!");
-      htmlData = osw.toString();
+       this.showStatus("Transformation Done!");
+       htmlData = osw.toString();
     }
     return htmlData;
   }
@@ -730,7 +730,7 @@ public class XSLTProcessorApplet extends Applet
               m_getSource = false;
               m_sourceText = getSource();
             }
-            else              // Perform a transformation.
+            else            // Perform a transformation.
               m_htmlText = processTransformation();
           }
           catch (Exception e)
